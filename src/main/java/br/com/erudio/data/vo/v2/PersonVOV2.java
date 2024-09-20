@@ -4,10 +4,12 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
-public class PersonVOV2 implements Serializable {
+import org.springframework.hateoas.RepresentationModel;
+
+public class PersonVOV2 extends RepresentationModel<PersonVOV2> implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
-	private Long id;
+	private Long key;
 	private String firstName;
 	private String lastName;
 	private String address;
@@ -16,12 +18,12 @@ public class PersonVOV2 implements Serializable {
 	
 	public PersonVOV2() {}
 
-	public Long getId() {
-		return id;
+	public Long getKey() {
+		return key;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setKey(Long key) {
+		this.key = key;
 	}
 
 	public String getFirstName() {
@@ -66,7 +68,7 @@ public class PersonVOV2 implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(address, birthDay, firstName, gender, id, lastName);
+		return Objects.hash(address, birthDay, firstName, gender, key, lastName);
 	}
 
 	@Override
@@ -80,8 +82,7 @@ public class PersonVOV2 implements Serializable {
 		PersonVOV2 other = (PersonVOV2) obj;
 		return Objects.equals(address, other.address) && Objects.equals(birthDay, other.birthDay)
 				&& Objects.equals(firstName, other.firstName) && Objects.equals(gender, other.gender)
-				&& Objects.equals(id, other.id) && Objects.equals(lastName, other.lastName);
+				&& Objects.equals(key, other.key) && Objects.equals(lastName, other.lastName);
 	}
-
 
 }
