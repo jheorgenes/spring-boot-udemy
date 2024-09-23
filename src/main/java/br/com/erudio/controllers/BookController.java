@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.erudio.data.vo.v1.PersonVO;
-import br.com.erudio.services.PersonServices;
+import br.com.erudio.data.vo.v1.BookVO;
+import br.com.erudio.services.BookServices;
 import br.com.erudio.util.MediaType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -24,22 +24,22 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping("/api/person/v1")
-@Tag(name = "People", description = "Endpoints for Managing People")
-public class PersonController {
+@RequestMapping("/api/book/v1")
+@Tag(name = "Book", description = "Endpoints for Managing Book")
+public class BookController {
 	
 	@Autowired
-	private PersonServices service;
+	private BookServices service;
 	
 	
 	@GetMapping(
 			value = "/{id}", 
 			produces = { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YML }) //Usando o produces e consumes para interpretação do swagger futuramente
 	@Operation(
-			summary = "Find a Person", description = "Find a Person", 
-			tags = {"People"}, 
+			summary = "Find a Book", description = "Find a Book", 
+			tags = {"Book"}, 
 			responses = {
-					@ApiResponse(description = "Success", responseCode = "200", content = @Content(schema = @Schema(implementation = PersonVO.class))),
+					@ApiResponse(description = "Success", responseCode = "200", content = @Content(schema = @Schema(implementation = BookVO.class))),
 					@ApiResponse(description = "No Content", responseCode = "204", content = @Content),
 					@ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
 					@ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
@@ -47,19 +47,19 @@ public class PersonController {
 					@ApiResponse(description = "Internal Error", responseCode = "500", content = @Content)
 			}
 	)
-	public PersonVO findById(@PathVariable Long id) {
+	public BookVO findById(@PathVariable Long id) {
 		return service.findById(id);
 	}
 	
 	@GetMapping(
 			produces = { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YML })
 	@Operation(
-			summary = "Finds all people", description = "Finds all people", 
-			tags = {"People"}, 
+			summary = "Finds all book", description = "Finds all book", 
+			tags = {"Book"}, 
 			responses = {
 					@ApiResponse(description = "Success", responseCode = "200", content = {
 							@Content(mediaType = "application/json", 
-									 array = @ArraySchema(schema = @Schema(implementation = PersonVO.class)))
+									 array = @ArraySchema(schema = @Schema(implementation = BookVO.class)))
 					}),
 					@ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
 					@ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
@@ -67,7 +67,7 @@ public class PersonController {
 					@ApiResponse(description = "Internal Error", responseCode = "500", content = @Content)
 			}
 	)
-	public List<PersonVO> findAll() {
+	public List<BookVO> findAll() {
 		return service.findAll();
 	}
 	
@@ -75,17 +75,17 @@ public class PersonController {
 			consumes = { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YML }, 
 			produces = { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YML })
 	@Operation(
-			summary = "Adds a new Person", description = "Adds a new Person by passing in a JSON, XML or YML representation of the person",
-			tags = {"People"}, 
+			summary = "Adds a new Book", description = "Adds a new Book by passing in a JSON, XML or YML representation of the book",
+			tags = {"Book"}, 
 			responses = {
-					@ApiResponse(description = "Success", responseCode = "200", content = @Content(schema = @Schema(implementation = PersonVO.class))),
+					@ApiResponse(description = "Success", responseCode = "200", content = @Content(schema = @Schema(implementation = BookVO.class))),
 					@ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
 					@ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
 					@ApiResponse(description = "Internal Error", responseCode = "500", content = @Content)
 			}
 	)
-	public PersonVO create(@RequestBody PersonVO person) {
-		return service.create(person);
+	public BookVO create(@RequestBody BookVO book) {
+		return service.create(book);
 	}
 	
 	
@@ -94,17 +94,17 @@ public class PersonController {
 //			consumes = { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YML }, 
 //			produces = { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YML })
 //	@Operation(
-//			summary = "Adds a new Person with new Version", description = "Adds a new Person new Version by passing in a JSON, XML or YML representation of the person",
-//			tags = {"People"}, 
+//			summary = "Adds a new Book with new Version", description = "Adds a new Book new Version by passing in a JSON, XML or YML representation of the book",
+//			tags = {"Book"}, 
 //			responses = {
-//					@ApiResponse(description = "Success", responseCode = "200", content = @Content(schema = @Schema(implementation = PersonVO.class))),
+//					@ApiResponse(description = "Success", responseCode = "200", content = @Content(schema = @Schema(implementation = BookVO.class))),
 //					@ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
 //					@ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
 //					@ApiResponse(description = "Internal Error", responseCode = "500", content = @Content)
 //			}
 //	)
-//	public PersonVOV2 createV2(@RequestBody PersonVOV2 person) {
-//		return service.createV2(person);
+//	public BookVOV2 createV2(@RequestBody BookVOV2 book) {
+//		return service.createV2(book);
 //	}
 	
 	
@@ -112,26 +112,26 @@ public class PersonController {
 			consumes = { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YML }, 
 			produces = { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YML })
 	@Operation(
-			summary = "Updates a Person", description = "Updates a Person by passing in a JSON, XML or YML representation of the person", 
-			tags = {"People"}, 
+			summary = "Updates a Book", description = "Updates a Book by passing in a JSON, XML or YML representation of the book", 
+			tags = {"Book"}, 
 			responses = {
-					@ApiResponse(description = "Updated", responseCode = "200", content = @Content(schema = @Schema(implementation = PersonVO.class))),
+					@ApiResponse(description = "Updated", responseCode = "200", content = @Content(schema = @Schema(implementation = BookVO.class))),
 					@ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
 					@ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
 					@ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
 					@ApiResponse(description = "Internal Error", responseCode = "500", content = @Content)
 			}
 	)
-	public PersonVO update(@RequestBody PersonVO person) {
-		return service.update(person);
+	public BookVO update(@RequestBody BookVO book) {
+		return service.update(book);
 	}
 	
 	@DeleteMapping(
 			value = "/{id}", 
 			produces = { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YML })
 	@Operation(
-			summary = "Deletes a Person", description = "Deletes a Person by passing in a JSON, XML or YML representation of the person", 
-			tags = {"People"}, 
+			summary = "Deletes a Book", description = "Deletes a Book by passing in a JSON, XML or YML representation of the book", 
+			tags = {"Book"}, 
 			responses = {
 					@ApiResponse(description = "No Content", responseCode = "204", content = @Content),
 					@ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),

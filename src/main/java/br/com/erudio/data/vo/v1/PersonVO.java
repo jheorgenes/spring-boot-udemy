@@ -7,12 +7,14 @@ import org.springframework.hateoas.RepresentationModel;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.github.dozermapper.core.Mapping;
 
 @JsonPropertyOrder({"id","firstName", "lastName", "address", "gender"}) //Mudando a sequência dos campos do VO.
 public class PersonVO extends RepresentationModel<PersonVO> implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@JsonProperty("id")
+	@Mapping("id")  //Convertendo id para Key com o DozerMapper
 	private Long key;
 	
 //	@JsonProperty("first_name")
