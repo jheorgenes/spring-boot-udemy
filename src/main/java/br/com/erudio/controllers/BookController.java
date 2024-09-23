@@ -88,26 +88,6 @@ public class BookController {
 		return service.create(book);
 	}
 	
-	
-//	@PostMapping(
-//			value = "/v2", 
-//			consumes = { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YML }, 
-//			produces = { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YML })
-//	@Operation(
-//			summary = "Adds a new Book with new Version", description = "Adds a new Book new Version by passing in a JSON, XML or YML representation of the book",
-//			tags = {"Book"}, 
-//			responses = {
-//					@ApiResponse(description = "Success", responseCode = "200", content = @Content(schema = @Schema(implementation = BookVO.class))),
-//					@ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
-//					@ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
-//					@ApiResponse(description = "Internal Error", responseCode = "500", content = @Content)
-//			}
-//	)
-//	public BookVOV2 createV2(@RequestBody BookVOV2 book) {
-//		return service.createV2(book);
-//	}
-	
-	
 	@PutMapping(
 			consumes = { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YML }, 
 			produces = { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YML })
