@@ -5,7 +5,7 @@ import java.util.Objects;
 
 import jakarta.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name = "AccountCredentialsVO")
 public class AccountCredentialsVO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
