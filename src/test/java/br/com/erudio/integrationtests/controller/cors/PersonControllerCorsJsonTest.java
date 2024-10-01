@@ -75,14 +75,6 @@ public class PersonControllerCorsJsonTest extends AbstractIntegrationTest {
 	public void testCreate() throws JsonMappingException, JsonProcessingException {
 		mockPerson();
 		
-//		specification = new RequestSpecBuilder()
-//				.addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_ERUDIO) //Setando o Origin no cabecaçho
-//				.setBasePath("/api/person/v1") //Setando a rota
-//				.setPort(TestConfigs.SERVER_PORT) //Definindo a porta
-//					.addFilter(new RequestLoggingFilter(LogDetail.ALL))
-//					.addFilter(new ResponseLoggingFilter(LogDetail.ALL))
-//				.build();
-		
 		var content = given().spec(specification)
 				.contentType(TestConfigs.CONTENT_TYPE_JSON)
 				.header(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_ERUDIO)
@@ -115,36 +107,6 @@ public class PersonControllerCorsJsonTest extends AbstractIntegrationTest {
 	
 	@Test
 	@Order(2)
-	public void testCreateWithWrongOrigin() throws JsonMappingException, JsonProcessingException {
-		mockPerson();
-		
-		specification = new RequestSpecBuilder()
-				.addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_SEMERU) //Setando o Origin no cabecaçho
-				.setBasePath("/api/person/v1") //Setando a rota
-				.setPort(TestConfigs.SERVER_PORT) //Definindo a porta
-					.addFilter(new RequestLoggingFilter(LogDetail.ALL))
-					.addFilter(new ResponseLoggingFilter(LogDetail.ALL))
-				.build();
-		
-		var content = given().spec(specification)
-				.contentType(TestConfigs.CONTENT_TYPE_JSON)
-				.header(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_SEMERU)
-				.body(person)
-					.when()
-						.post()
-					.then()
-						.statusCode(403)
-					.extract()
-						.body()
-							.asString();
-		
-		
-		assertNotNull(content);
-		assertEquals("Invalid CORS request", content);
-	}
-	
-	@Test
-	@Order(3)
 	public void testFindById() throws JsonMappingException, JsonProcessingException {
 		mockPerson();
 		
@@ -187,17 +149,47 @@ public class PersonControllerCorsJsonTest extends AbstractIntegrationTest {
 	}
 	
 	@Test
+	@Order(3)
+	public void testCreateWithWrongOrigin() throws JsonMappingException, JsonProcessingException {
+		mockPerson();
+		
+		specification = new RequestSpecBuilder()
+				.addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_SEMERU) //Setando o Origin no cabecaçho
+				.setBasePath("/api/person/v1") //Setando a rota
+				.setPort(TestConfigs.SERVER_PORT) //Definindo a porta
+					.addFilter(new RequestLoggingFilter(LogDetail.ALL))
+					.addFilter(new ResponseLoggingFilter(LogDetail.ALL))
+				.build();
+		
+		var content = given().spec(specification)
+				.contentType(TestConfigs.CONTENT_TYPE_JSON)
+				.header(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_SEMERU)
+				.body(person)
+					.when()
+						.post()
+					.then()
+						.statusCode(403)
+					.extract()
+						.body()
+							.asString();
+		
+		
+		assertNotNull(content);
+		assertEquals("Invalid CORS request", content);
+	}
+	
+	@Test
 	@Order(4)
 	public void testFindByIdWithWrongOrigin() throws JsonMappingException, JsonProcessingException {
 		mockPerson();
 		
-//		specification = new RequestSpecBuilder()
-//				.addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_SEMERU) //Setando o Origin no cabecaçho
-//				.setBasePath("/api/person/v1") //Setando a rota
-//				.setPort(TestConfigs.SERVER_PORT) //Definindo a porta
-//					.addFilter(new RequestLoggingFilter(LogDetail.ALL))
-//					.addFilter(new ResponseLoggingFilter(LogDetail.ALL))
-//				.build();
+		specification = new RequestSpecBuilder()
+				.addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_SEMERU) //Setando o Origin no cabecaçho
+				.setBasePath("/api/person/v1") //Setando a rota
+				.setPort(TestConfigs.SERVER_PORT) //Definindo a porta
+					.addFilter(new RequestLoggingFilter(LogDetail.ALL))
+					.addFilter(new ResponseLoggingFilter(LogDetail.ALL))
+				.build();
 		
 		var content = given().spec(specification)
 				.contentType(TestConfigs.CONTENT_TYPE_JSON)
@@ -216,11 +208,11 @@ public class PersonControllerCorsJsonTest extends AbstractIntegrationTest {
 	}
 
 	private void mockPerson() {
-		person.setId(1L);
 		person.setFirstName("Richard");
 		person.setLastName("Stallman");
 		person.setAddress("New York City, New York, US");
 		person.setGender("Male");
+		person.setEnabled(true);
 		
 		System.out.printf("Person ", person.toString());
 	}
