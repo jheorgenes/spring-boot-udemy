@@ -1,11 +1,11 @@
 package br.com.erudio.controllers;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -76,9 +76,16 @@ public class PersonController {
 	)
 	public ResponseEntity<Page<PersonVO>> findAll(
 			@RequestParam(defaultValue = "0") Integer page,
-			@RequestParam(defaultValue = "12") Integer limit) {
+			@RequestParam(defaultValue = "12") Integer size,
+			@RequestParam(defaultValue = "asc") String direction) {
 		
-		Pageable pageable = PageRequest.of(page, limit);
+		// Convertendo desc ou asc para o Enum Próprio
+		var sortDirection = "desc".equalsIgnoreCase(direction) ? Direction.DESC : Direction.ASC;
+		
+		// Ao incluir a ordenação, precisa incrementar o Sort de org.springframework.data.domain.Sort
+		// Também é necessário passar o campo que será ordenado, igualmente está descrito no Model
+		Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, "firstName"));
+		
 		return ResponseEntity.ok(service.findAll(pageable));
 	}
 	
