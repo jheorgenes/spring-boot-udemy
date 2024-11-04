@@ -36,7 +36,7 @@ public class PersonServices {
 	@Autowired
 	private PersonMapper mapper;
 	
-	// Injetando um serviço que cria no HETOAS o link contendo orientação de qual página o item da lista se encontra.
+	// Injetando um serviço que cria no HATEOAS o link contendo orientação de qual página o item da lista se encontra.
 	@Autowired
 	private PagedResourcesAssembler<PersonVO> assembler;
 	
@@ -48,10 +48,10 @@ public class PersonServices {
 		var personPage = repository.findAll(pageable);
 		var personVosPage = personPage.map(p -> DozerMapper.parseObject(p, PersonVO.class));
 		
-		//Acrescentando link do HETOAS em cada linha do personVO
+		//Acrescentando link do HATEOAS em cada linha do personVO
 		personVosPage.map(p -> p.add(linkTo(methodOn(PersonController.class).findById(p.getKey())).withSelfRel()));
 
-		// Especificando o que será acrescido no link HETOAS
+		// Especificando o que será acrescido no link HATEOAS
 		Link link = linkTo(
 				methodOn(PersonController.class) //Definindo a classe controller
 				.findAll(pageable.getPageNumber(), pageable.getPageSize(), "asc") //Definindo o que será acrescido (numero da página, tamanho da página, ordenação
@@ -69,10 +69,10 @@ public class PersonServices {
 		var personPage = repository.findPersonsByName(firstName, pageable);
 		var personVosPage = personPage.map(p -> DozerMapper.parseObject(p, PersonVO.class));
 		
-		//Acrescentando link do HETOAS em cada linha do personVO
+		//Acrescentando link do HATEOAS em cada linha do personVO
 		personVosPage.map(p -> p.add(linkTo(methodOn(PersonController.class).findById(p.getKey())).withSelfRel()));
 		
-		// Especificando o que será acrescido no link HETOAS
+		// Especificando o que será acrescido no link HATEOAS
 		Link link = linkTo(
 				methodOn(PersonController.class) //Definindo a classe controller
 				.findAll(pageable.getPageNumber(), pageable.getPageSize(), "asc") //Definindo o que será acrescido (numero da página, tamanho da página, ordenação
