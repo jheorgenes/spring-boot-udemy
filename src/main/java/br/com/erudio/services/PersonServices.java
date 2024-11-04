@@ -6,8 +6,11 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
 
 import br.com.erudio.controllers.PersonController;
@@ -33,7 +36,12 @@ public class PersonServices {
 	@Autowired
 	private PersonMapper mapper;
 	
-	public Page<PersonVO> findAll(Pageable pageable) {
+	// Injetando um serviço que cria no HETOAS o link contendo orientação de qual página o item da lista se encontra.
+	@Autowired
+	private PagedResourcesAssembler<PersonVO> assembler;
+	
+	// Modificando o serviço para retornar um PagedModel<EntityModel<VO>>
+	public PagedModel<EntityModel<PersonVO>> findAll(Pageable pageable) {
 		logger.info("Finding all people!");
 		
 		//Armazenando o personPage e convertendo em VO
@@ -43,7 +51,14 @@ public class PersonServices {
 		//Acrescentando link do HETOAS em cada linha do personVO
 		personVosPage.map(p -> p.add(linkTo(methodOn(PersonController.class).findById(p.getKey())).withSelfRel()));
 
-		return personVosPage;
+		// Especificando o que será acrescido no link HETOAS
+		Link link = linkTo(
+				methodOn(PersonController.class) //Definindo a classe controller
+				.findAll(pageable.getPageNumber(), pageable.getPageSize(), "asc") //Definindo o que será acrescido (numero da página, tamanho da página, ordenação
+			).withSelfRel(); //Definindo como link
+		
+		//Retornando no formato PagedModel<EntityModel<VO>>, usando a o serviço injetado assembler.toModel
+		return assembler.toModel(personVosPage, link);
 	}
 
 	public PersonVO findById(Long id) {
