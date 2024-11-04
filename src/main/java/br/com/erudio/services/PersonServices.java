@@ -60,6 +60,27 @@ public class PersonServices {
 		//Retornando no formato PagedModel<EntityModel<VO>>, usando a o serviço injetado assembler.toModel
 		return assembler.toModel(personVosPage, link);
 	}
+	
+	
+	public PagedModel<EntityModel<PersonVO>> findPersonByName(String firstName, Pageable pageable) {
+		logger.info("Finding all people!");
+		
+		//Armazenando o personPage e convertendo em VO
+		var personPage = repository.findPersonsByName(firstName, pageable);
+		var personVosPage = personPage.map(p -> DozerMapper.parseObject(p, PersonVO.class));
+		
+		//Acrescentando link do HETOAS em cada linha do personVO
+		personVosPage.map(p -> p.add(linkTo(methodOn(PersonController.class).findById(p.getKey())).withSelfRel()));
+		
+		// Especificando o que será acrescido no link HETOAS
+		Link link = linkTo(
+				methodOn(PersonController.class) //Definindo a classe controller
+				.findAll(pageable.getPageNumber(), pageable.getPageSize(), "asc") //Definindo o que será acrescido (numero da página, tamanho da página, ordenação
+				).withSelfRel(); //Definindo como link
+		
+		//Retornando no formato PagedModel<EntityModel<VO>>, usando a o serviço injetado assembler.toModel
+		return assembler.toModel(personVosPage, link);
+	}
 
 	public PersonVO findById(Long id) {
 		logger.info("Finding one person!");
