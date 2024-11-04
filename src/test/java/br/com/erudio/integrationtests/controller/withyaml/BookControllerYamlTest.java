@@ -5,9 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
@@ -25,6 +23,7 @@ import br.com.erudio.integrationtests.testcontainers.AbstractIntegrationTest;
 import br.com.erudio.integrationtests.vo.AccountCredentialsVO;
 import br.com.erudio.integrationtests.vo.BookVO;
 import br.com.erudio.integrationtests.vo.TokenVO;
+import br.com.erudio.integrationtests.vo.pagedmodels.PagedModelBook;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.config.EncoderConfig;
 import io.restassured.config.RestAssuredConfig;
@@ -208,11 +207,12 @@ public class BookControllerYamlTest extends AbstractIntegrationTest {
 	@Order(5)
 	public void testFindAll() throws JsonMappingException, JsonProcessingException {
 		
-		var content = given().spec(specification)
+		var wrapper = given().spec(specification)
 				.config(RestAssuredConfig.config().encoderConfig(
 						EncoderConfig.encoderConfig().encodeContentTypeAs(TestConfigs.CONTENT_TYPE_YML, ContentType.TEXT)))
 				.accept(TestConfigs.CONTENT_TYPE_YML)
 				.contentType(TestConfigs.CONTENT_TYPE_YML)
+				.queryParams("page", 1, "size", 10, "direction", "asc")
 				.accept(TestConfigs.CONTENT_TYPE_YML)
 					.when()
 						.get()
@@ -220,9 +220,9 @@ public class BookControllerYamlTest extends AbstractIntegrationTest {
 						.statusCode(200)
 					.extract()
 						.body()
-							.as(BookVO[].class, objectMapper);
+							.as(PagedModelBook.class, objectMapper);
 		
-		List<BookVO> books = Arrays.asList(content);
+		var books = wrapper.getContent();
 		
 		System.out.println(books);
 		
@@ -237,9 +237,9 @@ public class BookControllerYamlTest extends AbstractIntegrationTest {
 		assertNotNull(foundBookOne.getAuthor());
 		
 		assertEquals(book.getId(), foundBookOne.getId());
-		assertEquals("Michael C. Feathers", foundBookOne.getAuthor());
-		assertEquals(49.0, foundBookOne.getPrice());
-		assertEquals("Working effectively with legacy code", foundBookOne.getTitle());
+		assertEquals("Susan Cain", foundBookOne.getAuthor());
+		assertEquals(123.0, foundBookOne.getPrice());
+		assertEquals("O poder dos quietos", foundBookOne.getTitle());
 		
 		BookVO foundBookThree = books.get(2);
 		book = foundBookThree;
@@ -252,9 +252,9 @@ public class BookControllerYamlTest extends AbstractIntegrationTest {
 		assertNotNull(foundBookThree.getAuthor());
 		
 		assertEquals(book.getId(), foundBookThree.getId());
-		assertEquals("Robert C. Martin", foundBookThree.getAuthor());
-		assertEquals(77.0, foundBookThree.getPrice());
-		assertEquals("Clean Code", foundBookThree.getTitle());
+		assertEquals("Marc J. Schiller", foundBookThree.getAuthor());
+		assertEquals(45.0, foundBookThree.getPrice());
+		assertEquals("Os 11 segredos de líderes de TI altamente influentes", foundBookThree.getTitle());
 		
 		
 		BookVO foundBookFive = books.get(4);
@@ -268,9 +268,9 @@ public class BookControllerYamlTest extends AbstractIntegrationTest {
 		assertNotNull(foundBookFive.getAuthor());
 		
 		assertEquals(book.getId(), foundBookFive.getId());
-		assertEquals("Steve McConnell", foundBookFive.getAuthor());
-		assertEquals(58.0, foundBookFive.getPrice());
-		assertEquals("Code complete", foundBookFive.getTitle());
+		assertEquals("Michael C. Feathers", foundBookFive.getAuthor());
+		assertEquals(49.0, foundBookFive.getPrice());
+		assertEquals("Working effectively with legacy code", foundBookFive.getTitle());
 	}
 
 	private void mockBook() {

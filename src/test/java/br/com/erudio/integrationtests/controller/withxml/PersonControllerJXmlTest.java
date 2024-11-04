@@ -6,8 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.List;
-
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
@@ -16,7 +14,6 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
@@ -26,6 +23,7 @@ import br.com.erudio.integrationtests.testcontainers.AbstractIntegrationTest;
 import br.com.erudio.integrationtests.vo.AccountCredentialsVO;
 import br.com.erudio.integrationtests.vo.PersonVO;
 import br.com.erudio.integrationtests.vo.TokenVO;
+import br.com.erudio.integrationtests.vo.pagedmodels.PagedModelPerson;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
@@ -57,6 +55,7 @@ public class PersonControllerJXmlTest extends AbstractIntegrationTest {
 				.port(TestConfigs.SERVER_PORT)
 				.contentType(TestConfigs.CONTENT_TYPE_XML)
 				.accept(TestConfigs.CONTENT_TYPE_XML)
+				.queryParams("page", 3, "size", 10, "direction", "asc")
 				.body(user)
 					.when()
 						.post()
@@ -242,6 +241,7 @@ public class PersonControllerJXmlTest extends AbstractIntegrationTest {
 		var content = given().spec(specification)
 				.contentType(TestConfigs.CONTENT_TYPE_XML)
 				.accept(TestConfigs.CONTENT_TYPE_XML)
+				.queryParams("page", 3, "size", 10, "direction", "asc")
 					.when()
 						.get()
 					.then()
@@ -251,7 +251,8 @@ public class PersonControllerJXmlTest extends AbstractIntegrationTest {
 							.asString();
 //							.as(new TypeRef<List<PersonVO>>() {});
 		
-		List<PersonVO> people = objectMapper.readValue(content, new TypeReference<List<PersonVO>>() {});
+		PagedModelPerson wrapper = objectMapper.readValue(content, PagedModelPerson.class);
+		var people = wrapper.getContent();
 		
 		PersonVO foundPersonOne = people.get(0);
 		person = foundPersonOne;
@@ -263,12 +264,12 @@ public class PersonControllerJXmlTest extends AbstractIntegrationTest {
 		assertNotNull(foundPersonOne.getGender());
 		assertTrue(foundPersonOne.getEnabled());
 		
-		assertEquals(1, foundPersonOne.getId());
+		assertEquals(1007, foundPersonOne.getId());
 		
-		assertEquals("Ayrton", foundPersonOne.getFirstName());
-		assertEquals("Senna", foundPersonOne.getLastName());
-		assertEquals("São Paulo", foundPersonOne.getAddress());
-		assertEquals("Male", foundPersonOne.getGender());
+		assertEquals("Alicia", foundPersonOne.getFirstName());
+		assertEquals("Leeburn", foundPersonOne.getLastName());
+		assertEquals("709 Bunting Junction", foundPersonOne.getAddress());
+		assertEquals("Female", foundPersonOne.getGender());
 		
 		PersonVO foundPersonSix = people.get(5);
 		person = foundPersonSix;
@@ -278,14 +279,14 @@ public class PersonControllerJXmlTest extends AbstractIntegrationTest {
 		assertNotNull(foundPersonSix.getLastName());
 		assertNotNull(foundPersonSix.getAddress());
 		assertNotNull(foundPersonSix.getGender());
-		assertTrue(foundPersonSix.getEnabled());
+		assertFalse(foundPersonSix.getEnabled());
 		
-		assertEquals(9, foundPersonSix.getId());
+		assertEquals(297, foundPersonSix.getId());
 		
-		assertEquals("Nikola", foundPersonSix.getFirstName());
-		assertEquals("Tesla", foundPersonSix.getLastName());
-		assertEquals("Smiljan - Croatia", foundPersonSix.getAddress());
-		assertEquals("Male", foundPersonSix.getGender());
+		assertEquals("Almire", foundPersonSix.getFirstName());
+		assertEquals("Greenlies", foundPersonSix.getLastName());
+		assertEquals("3 Fairfield Plaza", foundPersonSix.getAddress());
+		assertEquals("Female", foundPersonSix.getGender());
 	}
 	
 	
